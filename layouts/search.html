@@ -1,0 +1,11 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  <form role="search" onsubmit="return false">
+    <input id="q" type="search" placeholder="Suchbegriff …" aria-label="Suchbegriff" autocomplete="off" autofocus>
+  </form>
+  <p id="status" class="meta"></p>
+  <ul id="results" class="list"></ul>
+  <noscript><p>Die Suche benötigt JavaScript. Alternativ: <a href="{{ "tags/" | relURL }}">Tags</a>.</p></noscript>
+  {{ $js := resources.Get "js/search.js" | minify | fingerprint }}
+  <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" data-index="{{ "index.json" | relURL }}" defer></script>
+{{ end }}

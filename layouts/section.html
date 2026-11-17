@@ -1,0 +1,16 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ with .Sections }}
+    <h2>Themen</h2>
+    <ul class="topics">
+      {{ range . }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a> <span class="count">{{ len .RegularPagesRecursive }}</span></li>{{ end }}
+    </ul>
+  {{ end }}
+  {{ $pages := where .Pages "Kind" "page" }}
+  {{ if eq .Section "blog" }}{{ $pages = $pages.ByDate.Reverse }}{{ else }}{{ $pages = $pages.ByTitle }}{{ end }}
+  {{ with $pages }}
+    {{ if ne $.Section "blog" }}<h2>Artikel</h2>{{ end }}
+    <ul class="list">{{ range . }}{{ partial "item.html" . }}{{ end }}</ul>
+  {{ end }}
+{{ end }}

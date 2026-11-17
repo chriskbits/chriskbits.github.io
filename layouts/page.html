@@ -1,0 +1,10 @@
+{{ define "main" }}
+  <article>
+    <h1>{{ .Title }}</h1>
+    {{ if in (slice "blog" "wissen") .Section }}{{ partial "meta.html" . }}{{ end }}
+    {{ if and (eq .Section "wissen") (gt .WordCount 400) }}
+      <details class="toc"><summary>Inhalt</summary>{{ .TableOfContents }}</details>
+    {{ end }}
+    {{ .Content }}
+  </article>
+{{ end }}

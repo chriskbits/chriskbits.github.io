@@ -1,0 +1,16 @@
+{{ define "main" }}
+  <section class="intro">{{ .Content }}</section>
+
+  <h2>Neueste Beiträge</h2>
+  <ul class="list">
+    {{ range first 5 (where site.RegularPages "Section" "blog") }}{{ partial "item.html" . }}{{ end }}
+  </ul>
+  <p><a href="{{ "blog/" | relURL }}">Alle Beiträge →</a></p>
+
+  <h2>Wissen nach Themen</h2>
+  <ul class="topics">
+    {{ with site.GetPage "/wissen" }}{{ range .Sections }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a> <span class="count">{{ len .RegularPagesRecursive }}</span></li>
+    {{ end }}{{ end }}
+  </ul>
+{{ end }}

@@ -1,0 +1,4 @@
+{{ define "main" }}
+  <h1>#{{ .Title }}</h1>
+  <ul class="list">{{ range .Pages.ByDate.Reverse }}{{ partial "item.html" . }}{{ end }}</ul>
+{{ end }}

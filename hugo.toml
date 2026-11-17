@@ -1,0 +1,44 @@
+baseURL = "https://chriskbits.com/"
+locale = "de-DE"
+defaultContentLanguage = "de"
+title = "chriskbits"
+enableGitInfo = true          # "Zuletzt aktualisiert" aus der Git-Historie
+enableRobotsTXT = true
+
+[params]
+  description = "Wissenssammlung und Blog"
+  author = "Chris"
+
+[taxonomies]
+  tag = "tags"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]   # JSON = Suchindex für /suche/
+
+[markup.highlight]
+  noClasses = false   # Code-Farben kommen aus static/css/syntax.css
+
+[markup.goldmark.renderer]
+  unsafe = false      # kein rohes HTML in Markdown
+
+[menus]
+  [[menus.main]]
+    name = "Blog"
+    pageRef = "/blog"
+    weight = 10
+  [[menus.main]]
+    name = "Wissen"
+    pageRef = "/wissen"
+    weight = 20
+  [[menus.main]]
+    name = "Tags"
+    pageRef = "/tags"
+    weight = 30
+  [[menus.main]]
+    name = "Suche"
+    pageRef = "/suche"
+    weight = 40
+  [[menus.main]]
+    name = "Über mich"
+    pageRef = "/ueber"
+    weight = 50
