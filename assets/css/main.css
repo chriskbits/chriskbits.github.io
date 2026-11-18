@@ -44,3 +44,18 @@ mark { background: #fff3a3; color: inherit; }
 @media (prefers-color-scheme: dark) { mark { background: #5c4d00; } }
 .site-footer { margin: 4rem 0 2rem; padding-top: 1rem; border-top: 1px solid var(--border);
   color: var(--muted); font-size: .875rem; }
+.highlight { position: relative; }
+.highlight pre { padding-right: 6.5rem; }
+.copy-btn { position: absolute; top: .45rem; right: .45rem; font: .8rem system-ui, sans-serif;
+  padding: .2rem .6rem; color: var(--muted); background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; cursor: pointer; }
+.copy-btn:hover, .copy-btn:focus-visible { color: var(--fg); border-color: var(--muted); }
+.jump { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin: 1rem 0 0; }
+.oneliner { margin: 0 0 2rem; }
+.oneliner h3 { margin-bottom: .5rem; }
+.oneliner h3 a { color: inherit; text-decoration: none; }
+.oneliner h3 a:hover { text-decoration: underline; }
+.oneliner p { margin: .5rem 0; }
+.oneliner .meta { margin-top: .25rem; overflow-wrap: anywhere; }
+.oneliner pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.highlight .chroma .err { color: inherit; background: none; } /* keine roten Kästen bei Lexer-Fehlern */

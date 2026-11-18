@@ -25,5 +25,7 @@
   <footer class="site-footer">
     © {{ now.Year }} {{ site.Params.author }} · <a href="{{ "index.xml" | relURL }}">RSS</a>
   </footer>
+  {{ $copy := resources.Get "js/copy.js" | minify | fingerprint }}
+  <script src="{{ $copy.RelPermalink }}" integrity="{{ $copy.Data.Integrity }}" defer></script>
 </body>
 </html>

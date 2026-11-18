@@ -1,0 +1,123 @@
+# PowerShell-Einzeiler für die Seite /einzeiler/
+#
+# Neuen Einzeiler hinzufügen: einen Block in die passende Gruppe kopieren und anpassen.
+#   titel:        Überschrift (kurz, sagt was der Befehl tut)
+#   code:         Der Befehl. Mit "|-" darf er beliebige Zeichen enthalten, nur einrücken.
+#   beschreibung: Ein, zwei Sätze. Markdown erlaubt, z. B. `Get-Process`.
+#   link:         Optional: Referenz, z. B. Microsoft-Learn-Doku zum wichtigsten Cmdlet.
+#   linktext:     Optional: eigener Text für den Link (sonst z. B. "Microsoft Learn: get-process").
+# Neue Gruppe: einen neuen Eintrag mit "gruppe:" und "befehle:" anlegen.
+
+- gruppe: System
+  befehle:
+    - titel: Laufzeit seit dem letzten Neustart
+      code: |-
+        (Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+      beschreibung: Zeigt, wie lange der Rechner schon läuft (Tage, Stunden, Minuten).
+      link: https://learn.microsoft.com/powershell/module/cimcmdlets/get-ciminstance
+
+    - titel: PowerShell-Version anzeigen
+      code: |-
+        $PSVersionTable
+      beschreibung: Version von PowerShell, Edition (Desktop oder Core) und Betriebssystem auf einen Blick.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_automatic_variables#psversiontable
+      linktext: "Microsoft Learn: about_Automatic_Variables"
+
+    - titel: Installierte Programme auflisten
+      code: |-
+        Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*, HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object DisplayName | Select-Object DisplayName, DisplayVersion, Publisher | Sort-Object DisplayName
+      beschreibung: Liest die Uninstall-Schlüssel der Registry (32- und 64-Bit) und liefert Name, Version und Hersteller. Schneller und harmloser als `Win32_Product`.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.management/get-itemproperty
+
+    - titel: Wer hat den Rechner neu gestartet?
+      code: |-
+        Get-WinEvent -FilterHashtable @{LogName='System'; Id=1074} -MaxEvents 10 | Select-Object TimeCreated, Message
+      beschreibung: Die letzten zehn geplanten Neustarts und Herunterfahren mit Benutzer, Prozess und Grund (Ereignis-ID 1074).
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.diagnostics/get-winevent
+
+    - titel: Windows Sandbox aktivieren
+      code: |-
+        Enable-WindowsOptionalFeature -FeatureName "Containers-DisposableClientVM" -All -Online
+      beschreibung: Schaltet die Windows Sandbox frei, eine wegwerfbare Windows-Umgebung zum gefahrlosen Testen von Programmen. Braucht eine Admin-Konsole, Windows Pro oder Enterprise und einen Neustart.
+      link: https://learn.microsoft.com/windows/security/application-security/application-isolation/windows-sandbox/
+      linktext: "Microsoft Learn: Windows Sandbox"
+
+- gruppe: Dateien
+  befehle:
+    - titel: Die zehn größten Dateien finden
+      code: |-
+        Get-ChildItem -Recurse -File -ErrorAction SilentlyContinue | Sort-Object Length -Descending | Select-Object -First 10 FullName, @{n='MB'; e={[math]::Round($_.Length / 1MB, 1)}}
+      beschreibung: Durchsucht den aktuellen Ordner samt Unterordnern und zeigt die größten Dateien in MB. Praktisch, wenn die Platte voll ist.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.management/get-childitem
+
+    - titel: Prüfsumme einer Datei berechnen
+      code: |-
+        Get-FileHash .\datei.iso -Algorithm SHA256
+      beschreibung: Berechnet den SHA-256-Hash, z. B. um einen Download mit der Prüfsumme des Herstellers zu vergleichen.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/get-filehash
+
+    - titel: Text in Dateien suchen (wie grep)
+      code: |-
+        Get-ChildItem -Recurse -Include *.ps1, *.txt | Select-String -Pattern 'TODO'
+      beschreibung: Findet alle Zeilen mit dem Suchbegriff, inklusive Dateiname und Zeilennummer. `-Pattern` ist ein regulärer Ausdruck.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/select-string
+
+    - titel: Logdatei live mitlesen (wie tail -f)
+      code: |-
+        Get-Content .\app.log -Tail 20 -Wait
+      beschreibung: Zeigt die letzten 20 Zeilen und danach laufend neue Einträge. Beenden mit Strg+C.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.management/get-content
+
+- gruppe: Netzwerk
+  befehle:
+    - titel: Ist ein Port erreichbar?
+      code: |-
+        Test-NetConnection -ComputerName example.com -Port 443
+      beschreibung: Prüft Namensauflösung, Ping und ob der TCP-Port offen ist. Der Ersatz für `telnet host port`.
+      link: https://learn.microsoft.com/powershell/module/nettcpip/test-netconnection
+
+    - titel: Eigene IPv4-Adressen anzeigen
+      code: |-
+        Get-NetIPAddress -AddressFamily IPv4 | Where-Object IPAddress -ne '127.0.0.1' | Select-Object InterfaceAlias, IPAddress, PrefixLength
+      beschreibung: Alle lokalen IPv4-Adressen pro Netzwerkadapter, übersichtlicher als `ipconfig`.
+      link: https://learn.microsoft.com/powershell/module/nettcpip/get-netipaddress
+
+    - titel: Öffentliche IP-Adresse herausfinden
+      code: |-
+        (Invoke-RestMethod -Uri 'https://api.ipify.org?format=json').ip
+      beschreibung: Fragt den kostenlosen Dienst ipify, mit welcher Adresse der Rechner im Internet unterwegs ist.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/invoke-restmethod
+
+    - titel: Welcher Prozess lauscht auf welchem Port?
+      code: |-
+        Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, @{n='Prozess'; e={(Get-Process -Id $_.OwningProcess).ProcessName}} | Sort-Object LocalPort
+      beschreibung: Wie `netstat -ano`, aber gleich mit Prozessnamen statt nur der Prozess-ID.
+      link: https://learn.microsoft.com/powershell/module/nettcpip/get-nettcpconnection
+
+- gruppe: Prozesse und Dienste
+  befehle:
+    - titel: Die zehn CPU-hungrigsten Prozesse
+      code: |-
+        Get-Process | Sort-Object CPU -Descending | Select-Object -First 10 Name, Id, CPU, @{n='RAM (MB)'; e={[math]::Round($_.WorkingSet64 / 1MB)}}
+      beschreibung: Prozesse nach verbrauchter CPU-Zeit, mit Arbeitsspeicher in MB. Ein schneller Blick ohne Task-Manager.
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.management/get-process
+
+    - titel: Automatische Dienste, die nicht laufen
+      code: |-
+        Get-CimInstance Win32_Service -Filter "StartMode='Auto' AND State<>'Running'" | Select-Object Name, DisplayName, State
+      beschreibung: Findet Dienste, die eigentlich automatisch starten sollten, aber gerade gestoppt sind. Gut nach Updates oder Abstürzen.
+      link: https://learn.microsoft.com/powershell/module/cimcmdlets/get-ciminstance
+
+- gruppe: Komfort
+  befehle:
+    - titel: Den gesamten Befehlsverlauf durchsuchen
+      code: |-
+        Get-Content (Get-PSReadLineOption).HistorySavePath | Select-String 'Get-'
+      beschreibung: PSReadLine speichert alle eingegebenen Befehle über Sitzungen hinweg. So findet man den einen Befehl von letzter Woche wieder.
+      link: https://learn.microsoft.com/powershell/module/psreadline/get-psreadlineoption
+
+    - titel: Ergebnisse in einer filterbaren Tabelle ansehen
+      code: |-
+        Get-Service | Out-GridView -PassThru
+      beschreibung: Öffnet ein Fenster mit Such- und Filterfunktion. Mit `-PassThru` werden die markierten Zeilen zurückgegeben und lassen sich weiterverarbeiten (nur Windows).
+      link: https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/out-gridview
