@@ -9,4 +9,18 @@
       "content" (.Plain | truncate 5000)
   ) -}}
 {{- end -}}
+{{- with site.GetPage "/einzeiler" -}}
+  {{- $text := slice -}}
+  {{- range hugo.Data.einzeiler -}}{{- range .befehle -}}
+    {{- $text = $text | append .titel .beschreibung .code -}}
+  {{- end -}}{{- end -}}
+  {{- $items = $items | append (dict
+      "title" .Title
+      "url" .RelPermalink
+      "section" "Einzeiler"
+      "tags" (slice "powershell")
+      "summary" (.Summary | plainify | truncate 200)
+      "content" (delimit $text " " | markdownify | plainify)
+  ) -}}
+{{- end -}}
 {{- $items | jsonify -}}

@@ -1,0 +1,27 @@
+{{ define "main" }}
+  <article class="einzeiler">
+    <h1>{{ .Title }}</h1>
+    {{ .Content }}
+    {{ $gruppen := hugo.Data.einzeiler }}
+    {{ with $gruppen }}
+      <nav class="jump" aria-label="Gruppen">
+        {{ range . }}<a href="#{{ .gruppe | anchorize }}">{{ .gruppe }}</a>{{ end }}
+      </nav>
+    {{ end }}
+    {{ range $gruppen }}
+      <h2 id="{{ .gruppe | anchorize }}">{{ .gruppe }}</h2>
+      {{ range .befehle }}{{ $b := . }}
+        <section class="oneliner" id="{{ .titel | anchorize }}">
+          <h3><a href="#{{ .titel | anchorize }}">{{ .titel }}</a></h3>
+          {{ transform.Highlight (trim .code "\n") (.sprache | default "powershell") }}
+          {{ with .beschreibung }}<p>{{ . | markdownify }}</p>{{ end }}
+          {{ with .link }}
+            {{ $u := urls.Parse . }}
+            {{ $quelle := cond (eq $u.Host "learn.microsoft.com") "Microsoft Learn" ($u.Host | strings.TrimPrefix "www.") }}
+            <p class="meta">Referenz: <a href="{{ . }}">{{ $b.linktext | default (printf "%s: %s" $quelle (path.Base $u.Path)) }}</a></p>
+          {{ end }}
+        </section>
+      {{ end }}
+    {{ end }}
+  </article>
+{{ end }}

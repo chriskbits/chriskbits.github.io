@@ -31,6 +31,10 @@ enableRobotsTXT = true
     pageRef = "/wissen"
     weight = 20
   [[menus.main]]
+    name = "Einzeiler"
+    pageRef = "/einzeiler"
+    weight = 25
+  [[menus.main]]
     name = "Tags"
     pageRef = "/tags"
     weight = 30

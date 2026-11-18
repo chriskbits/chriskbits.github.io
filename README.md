@@ -58,6 +58,21 @@ Bei Blog-Beiträgen ohne `summary` trennt `<!--more-->` den Anrisstext vom Rest.
 Bilder: Artikel als Ordner anlegen (`content/blog/mein-thema/index.md`), Bild daneben legen und mit
 `![Beschreibung](bild.jpg)` einbinden.
 
+## Einzeiler (PowerShell) ergänzen
+
+Die Seite `/einzeiler/` wird aus `data/einzeiler.yaml` erzeugt. Für einen neuen Einzeiler einen Block
+in die passende Gruppe kopieren (direkt auf GitHub bearbeitbar):
+
+```yaml
+    - titel: Was der Befehl tut
+      code: |-
+        Get-Process | Sort-Object CPU -Descending
+      beschreibung: Kurze Erklärung, Markdown erlaubt.
+      link: https://learn.microsoft.com/powershell/module/...
+```
+
+Jeder Codeblock auf der ganzen Seite bekommt automatisch einen **Kopieren**-Knopf (`assets/js/copy.js`).
+
 ## Lokal ansehen
 
 [Hugo installieren](https://gohugo.io/installation/) (eine einzelne Datei), dann:
@@ -72,6 +87,7 @@ hugo server -D      # http://localhost:1313, -D zeigt auch Entwürfe
 content/
   blog/            Blog-Beiträge
   wissen/<thema>/  Wissensartikel nach Thema
+  einzeiler.md     Einzeiler-Seite (Inhalt aus data/einzeiler.yaml)
   ueber.md         Über mich
   suche.md         Suchseite
 layouts/           HTML-Templates (eigenes Minimal-Layout)
