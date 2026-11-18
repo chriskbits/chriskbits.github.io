@@ -35,6 +35,13 @@
       beschreibung: Die letzten zehn geplanten Neustarts und Herunterfahren mit Benutzer, Prozess und Grund (Ereignis-ID 1074).
       link: https://learn.microsoft.com/powershell/module/microsoft.powershell.diagnostics/get-winevent
 
+    - titel: Windows Sandbox aktivieren
+      code: |-
+        Enable-WindowsOptionalFeature -FeatureName "Containers-DisposableClientVM" -All -Online
+      beschreibung: Schaltet die Windows Sandbox frei, eine wegwerfbare Windows-Umgebung zum gefahrlosen Testen von Programmen. Braucht eine Admin-Konsole, Windows Pro oder Enterprise und einen Neustart.
+      link: https://learn.microsoft.com/windows/security/application-security/application-isolation/windows-sandbox/
+      linktext: "Microsoft Learn: Windows Sandbox"
+
 - gruppe: Dateien
   befehle:
     - titel: Die zehn größten Dateien finden
